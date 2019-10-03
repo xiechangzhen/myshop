@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.linkage.myshop.mapper.GoodsMapper">
+
+	<!-- 根据商品分类id获取商品的数据列表 -->
+	<!-- List<Goods> findByCategoryId(@Param("categoryId") long categoryId,
+			@Param("offSet") Integer offSet, @Param("count") Integer count)) -->
+	<select id="findByCategoryId" resultType="com.linkage.myshop.entity.Goods">
+		SELECT
+			id,title,
+			price,sell_point AS sellPoint,
+			image
+		FROM
+			t_goods
+		WHERE
+			category_id=#{categoryId}
+		ORDER BY 
+			priority DESC
+		LIMIT
+			#{offSet},#{count}
+	</select>
+
+	<!-- 根据商品id获取商品的详情 -->
+	<!-- Goods findById(long id) -->
+	<select id="findById" resultType="com.linkage.myshop.entity.Goods">
+		SELECT
+			id,category_id AS categoryId,
+			title,item_type AS itemType,
+			price,sell_point AS sellPoint,
+			num,barcode,
+			image,status,
+			priority,
+			created_time AS createTime,
+			modified_time AS modifiedTime,
+			created_user AS createUser,
+			modified_user AS modifiedUser
+		FROM
+			t_goods
+		WHERE
+			id=#{id}
+	</select>
+	
+	<!-- 根据Priority获取商品的详情 -->
+	<!-- List<Goods> findByPriority(Integer count) -->
+	<select id="findByPriority" resultType="com.linkage.myshop.entity.Goods">
+		SELECT
+			id,title,
+			price,image
+		FROM
+			t_goods
+		WHERE
+			num > 0 
+		AND 
+		 	status = 1	
+		ORDER BY
+			priority DESC
+		LIMIT 
+			0,#{count}
+	</select>
+</mapper>
+

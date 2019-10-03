@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.linkage.myshop.mapper.OrderMapper">
+
+	<!-- 插入订单数据 -->
+	<!-- Integer insertOrder(Order order) -->
+	<insert id="insertOrder" useGeneratedKeys="true" keyProperty="oid">
+		INSERT INTO t_order (
+			uid, recv_name,
+			recv_phone, recv_address,
+			total_price, status,
+			order_time, pay_time,
+			created_user, created_time,
+			modified_user, modified_time
+		) VALUES (
+			#{uid}, #{recvName},
+			#{recvPhone}, #{recvAddress},
+			#{totalPrice}, #{status},
+			#{orderTime}, #{payTime},
+			#{createUser}, #{createTime},
+			#{modifiedUser}, #{modifiedTime}
+		)
+	</insert>
+
+	<!-- 插入订单商品数据 -->
+	<!-- Integer insertOrderItem(OrderItem orderItem) -->
+	<insert id="insertOrderItem" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO t_order_item (
+			oid, gid,
+			goods_title, goods_image,
+			goods_price, goods_num,
+			created_user, created_time,
+			modified_user, modified_time
+		) VALUES (
+			#{oid}, #{gid},
+			#{goodsTitle}, #{goodsImage},
+			#{goodsPrice}, #{goodsNum},
+			#{createUser}, #{createTime},
+			#{modifiedUser}, #{modifiedTime}
+		)
+	</insert>
+
+
+	<resultMap type="com.linkage.myshop.vo.OrderVO" id="order_orderVO_map">
+		<id column="oid" property="id"/>
+		<result column="uid" property="uid"/>
+		<result column="recv_name" property="recvName"/>
+		<result column="recv_phone" property="recvPhone"/>
+		<result column="recv_address" property="recvAddress"/>
+		<result column="total_price" property="totalPrice"/>
+		<result column="status" property="status"/>
+		<collection ofType="com.linkage.myshop.entity.OrderItem" property="items">
+			<result column="gid" property="gid"/>
+			<result column="goods_image" property="goodsImage"/>
+			<result column="goods_title" property="goodsTitle"/>
+			<result column="goods_price" property="goodsPrice"/>
+			<result column="goods_num" property="goodsNum"/>
+		</collection>
+	</resultMap>
+	
+	<!-- 查询订单商品数据 -->
+	<!-- OrderVO findByOid(Integer oid) -->
+	<select id="findByOid" resultMap="order_orderVO_map">
+		SELECT 
+			t_order.oid,uid,
+			recv_name,recv_phone,
+			recv_address,
+			total_price,status,
+			gid,goods_image,
+			goods_title,goods_price,
+			goods_num
+		FROM
+			t_order
+		INNER JOIN
+			t_order_item
+		ON
+			t_order.oid = t_order_item.oid
+		WHERE 
+			t_order.oid = #{oid}
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+

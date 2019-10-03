@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.linkage.myshop.mapper.GoodsCategoryMapper">
+
+	<!-- 根据父级代号获取子级的省/市/区的列表 -->
+	<!-- List<District> findByParent(String parent) -->
+	<select id="findByParentId" resultType="com.linkage.myshop.entity.GoodsCategory">
+		SELECT
+			id,name
+		FROM
+			t_goods_category
+
+		ORDER BY 
+			sort_order DESC
+	</select>
+</mapper>
+
+
+
+
+
+
+
+

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.linkage.myshop.mapper.CartMapper">
+
+	<!-- 向购物车中添加一条新的数据 -->
+	<!-- Integer addNew(Cart cart) -->
+	<insert id="addNew" useGeneratedKeys="true" keyProperty="id" parameterType="com.linkage.myshop.entity.Cart">
+		INSERT INTO
+			t_cart
+		(
+			id,uid,
+			gid,price,
+			count,
+			created_user,created_time,
+			modified_user,modified_time
+		)VALUES(
+			#{id},#{uid},
+			#{gid},#{price},
+			#{count},
+			#{createUser},#{createTime},
+			#{modifiedUser},#{modifiedTime}	
+		)		
+	</insert>
+	
+	
+	<!-- 根据购物车主键id数组删除购物车的数据-->
+	<!-- Integer deleteByIds(Integer[] ids) -->
+	<delete id="deleteByIds" >
+		DELETE FROM
+			t_cart
+		WHERE
+			id
+		IN(
+			<foreach collection="array" separator="," item="id">
+				#{id}
+			</foreach>
+		)
+	</delete>
+	
+
+	<!-- 根据用户id和商品id得到购物车的数据-->
+	<!-- Cart findByUidAndGid(@Param("uid") Integer uid,@Param("gid") Long gid) -->
+	<select id="findByUidAndGid" resultType="com.linkage.myshop.entity.Cart">
+		SELECT
+			id,count,
+			price
+		FROM
+			t_cart
+		WHERE
+			uid = #{uid} 
+		AND 
+		 	gid = #{gid}
+	</select>
+	
+	<!-- 根据用户id查询用户的购物车列表-->
+	<!-- List<CartVO> findByUid(Integer uid) -->
+	<select id="findByUid" resultType="com.linkage.myshop.vo.CartVO">
+		SELECT
+			t_cart.id,title,
+			uid,gid,
+			`count`,image,
+			t_cart.price AS oldPrice,
+			t_goods.price AS newPrice
+		FROM
+			t_cart 
+		INNER JOIN
+			t_goods
+		ON
+			t_cart.gid = t_goods.id
+		WHERE
+			uid = #{uid} 
+		ORDER BY
+			t_cart.modified_time DESC
+	</select>
+	
+	<!-- 根据购物车主键id查询用户的购物车-->
+	<!-- Cart findById(Integer id) -->
+	<select id="findById" resultType="com.linkage.myshop.entity.Cart">
+		SELECT
+			id,count,
+			uid
+		FROM
+			t_cart 
+		WHERE
+			id = #{id} 
+	</select>
+	
+	<!-- 根据购物车主键id数组得到购物车的数据-->
+	<!-- List<CartVO> findByIds(Integer[] ids) -->
+	<select id="findByIds" resultType="com.linkage.myshop.vo.CartVO">
+		SELECT
+			t_cart.id,title,
+			uid,gid,
+			`count`,image,
+			t_cart.price AS oldPrice,
+			t_goods.price AS newPrice
+		FROM
+			t_cart 
+		INNER JOIN
+			t_goods
+		ON
+			t_cart.gid = t_goods.id
+		WHERE
+			t_cart.id
+		IN(
+			<foreach collection="array" separator="," item="id">
+				#{id}
+			</foreach>
+		)
+		ORDER BY
+			t_cart.modified_time DESC
+	</select>
+	
+	<!-- 修改购物车中的商品数量和修改人修改时间-->
+	<!-- Integer update(@Param("count") Integer count,
+	@Param("modifiedUser") String modifiedUser,
+	@Param("modifiedTime") Date modifiedTime) -->
+	<update id="update">
+		UPDATE 
+			t_cart
+		SET
+			`count` = #{count},
+			modified_user = #{modifiedUser},
+			modified_time = #{modifiedTime}	
+		WHERE 
+			id = #{id}		
+	</update>
+
+</mapper>
+

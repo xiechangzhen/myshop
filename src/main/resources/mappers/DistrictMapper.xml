@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.linkage.myshop.mapper.DistrictMapper">
+
+	<!-- 根据父级代号获取子级的省/市/区的列表 -->
+	<!-- List<District> findByParent(String parent) -->
+	<select id="findByParent" parameterType="java.lang.String" resultType="com.linkage.myshop.entity.District">
+		SELECT
+			id,parent,
+			code,name
+		FROM
+			t_dict_district
+		WHERE
+			parent=#{parent}
+		ORDER BY 
+			name asc
+	</select>
+
+	<!-- 根据代号获取省/市/区的详情 -->
+	<!-- District findByCody(String code) -->
+	<select id="findByCody" resultType="com.linkage.myshop.entity.District">
+		SELECT
+			parent,code,
+			name
+		FROM
+			t_dict_district
+		WHERE
+			code=#{code}
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
